@@ -3,7 +3,6 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from dotenv import load_dotenv
-from app.routes import *
 from app.models import *
 
 load_dotenv()
@@ -22,3 +21,5 @@ migrate.init_app(app, db)
 
 with app.app_context():
     db.create_all()
+
+from app.routes import *
