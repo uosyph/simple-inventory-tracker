@@ -1,4 +1,5 @@
 from app import app, db, Product, Order, OrderItem, Ingredient, ProductIngredient
+from ..utils.send_email import send_low_stock_email
 from flask import request, jsonify
 from sqlalchemy.exc import IntegrityError
 
@@ -52,8 +53,7 @@ def create_order():
                 # Step 4: Check if stock falls below 50% and trigger email
                 if ingredient.stock <= ingredient.initial_stock * 0.5:
                     if not ingredient.below_threshold:
-                        # send_low_stock_email(ingredient)
-                        print(ingredient)
+                        send_low_stock_email(ingredient)
                         ingredient.below_threshold = True
 
                 db.session.add(ingredient)
