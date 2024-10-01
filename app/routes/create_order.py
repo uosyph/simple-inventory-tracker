@@ -24,7 +24,6 @@ def create_order():
             if quantity < 1:
                 return jsonify({"error": "Quantity cannot be less than 1."}), 400
 
-            # Fetch the product
             product = db.session.get(Product, product_id)
             if not product:
                 return (
@@ -38,7 +37,7 @@ def create_order():
             )
             db.session.add(order_item)
 
-            # Step 3: Check if there is enough stock for each product's ingredients
+            # Step 3: Update stock for each ingredient used in the product
             for product_ingredient in product.ingredients:
                 ingredient = db.session.get(Ingredient, product_ingredient.ingredient_id)
                 used_amount = product_ingredient.amount * quantity
@@ -48,7 +47,6 @@ def create_order():
                     return jsonify(
                             {"error": f"Insufficient stock for ingredient {ingredient.name}."}), 400
 
-                # If there is sufficient stock, deduct the amount
                 ingredient.stock -= used_amount
 
                 # Step 4: Check if stock falls below 50% and trigger email
