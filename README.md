@@ -81,12 +81,12 @@ Place a new order.
 
     ```json
     {
-    	"products": [
-    		{
-                "product_id": int,  // The ID of the product to order
-                "quantity": int     // The number of items ordered (must be > 0), if missing defaults to 1
-    		}
-    	]
+      "products": [
+        {
+          "product_id": int,  // ID of the product to order
+          "quantity": int     // Number of items to order, must be > 0, defaults to 1 if missing
+        }
+      ]
     }
     ```
 
