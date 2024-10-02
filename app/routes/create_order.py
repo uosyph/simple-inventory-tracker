@@ -11,12 +11,12 @@ def create_order():
         return jsonify({"error": "Missing request data."}), 400
 
     try:
-        # Step 1: Create the order
+        # Create the order
         order = Order()
         db.session.add(order)
         db.session.flush()
 
-        # Step 2: Loop through products and add them to the order
+        # Loop through products and add them to the order
         products_ordered = data.get("products", [])
         for item in products_ordered:
             product_id = item.get("product_id")
@@ -27,30 +27,24 @@ def create_order():
 
             product = db.session.get(Product, product_id)
             if not product:
-                return (
-                    jsonify({"error": f"Product with ID {product_id} not found."}),
-                    404,
-                )
+                return jsonify({"error": f"Product with ID {product_id} not found."}), 404
 
             # Add product to order
-            order_item = OrderItem(
-                order_id=order.id, product_id=product.id, quantity=quantity
-            )
+            order_item = OrderItem(order_id=order.id, product_id=product.id, quantity=quantity)
             db.session.add(order_item)
 
-            # Step 3: Update stock for each ingredient used in the product
+            # Update stock for each ingredient used in the product
             for product_ingredient in product.ingredients:
                 ingredient = db.session.get(Ingredient, product_ingredient.ingredient_id)
                 used_amount = product_ingredient.amount * quantity
 
                 # Check if there is sufficient stock
                 if ingredient.stock < used_amount:
-                    return jsonify(
-                            {"error": f"Insufficient stock for ingredient {ingredient.name}."}), 400
+                    return jsonify({"error": f"Insufficient stock for ingredient {ingredient.name}."}), 400
 
                 ingredient.stock -= used_amount
 
-                # Step 4: Check if stock falls below 50% and trigger email
+                # Check if stock falls below 50% and trigger email
                 if ingredient.stock <= ingredient.initial_stock * 0.5:
                     if not ingredient.below_threshold:
                         send_low_stock_email(ingredient)
