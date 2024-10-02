@@ -11,7 +11,7 @@ def send_low_stock_email(ingredient):
     body = f"""
     <html>
         <body>
-            <h2>{ingredient.name} stock is less that 50%.</h2>
+            <h2>{ingredient.name} stock is less than 50%.</h2>
             <p><strong>Ingredient:</strong> {ingredient.name}</p>
             <p><strong>Current Stock:</strong> {ingredient.stock}</p>
             <p><strong>Initial Stock:</strong> {ingredient.initial_stock}</p>
